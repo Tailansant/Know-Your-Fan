@@ -1,12 +1,15 @@
-from fastapi import FastAPI, Depends
+# main.py
+from fastapi import FastAPI, Depends, HTTPException
+from schemas import FanCreate  
 from sqlalchemy.orm import Session
+from crud import get_fans, get_fan, create_fan, update_fan, delete_fan
 from database import SessionLocal, engine
-import models, schemas
-
-models.Base.metadata.create_all(bind=engine)
+from models import Fan
+import schemas
 
 app = FastAPI()
 
+# Dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -14,14 +17,32 @@ def get_db():
     finally:
         db.close()
 
-@app.post("/login", response_model=schemas.FanOut)
-def fake_login(fan: schemas.FanCreate, db: Session = Depends(get_db)):
-    db_fan = models.Fan(**fan.dict())
-    db.add(db_fan)
-    db.commit()
-    db.refresh(db_fan)
+@app.post("/fans", response_model=schemas.Fan)
+def create_fan_route(fan: schemas.FanCreate, db: Session = Depends(get_db)):
+    db_fan = create_fan(db, fan)
     return db_fan
 
-@app.get("/fans")
-def get_all_fans(db: Session = Depends(get_db)):
-    return db.query(models.Fan).all()
+@app.get("/fans", response_model=list[schemas.Fan])
+def read_fans(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return get_fans(db, skip=skip, limit=limit)
+
+@app.get("/fans/{fan_id}", response_model=schemas.Fan)
+def read_fan(fan_id: int, db: Session = Depends(get_db)):
+    db_fan = get_fan(db, fan_id=fan_id)
+    if db_fan is None:
+        raise HTTPException(status_code=404, detail="Fan not found")
+    return db_fan
+
+@app.put("/fans/{fan_id}", response_model=schemas.Fan)
+def update_fan_route(fan_id: int, fan: schemas.FanCreate, db: Session = Depends(get_db)):
+    db_fan = update_fan(db, fan_id=fan_id, fan=fan)
+    if db_fan is None:
+        raise HTTPException(status_code=404, detail="Fan not found")
+    return db_fan
+
+@app.delete("/fans/{fan_id}", response_model=schemas.Fan)
+def delete_fan_route(fan_id: int, db: Session = Depends(get_db)):
+    db_fan = delete_fan(db, fan_id=fan_id)
+    if db_fan is None:
+        raise HTTPException(status_code=404, detail="Fan not found")
+    return db_fan

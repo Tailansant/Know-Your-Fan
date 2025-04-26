@@ -1,17 +1,17 @@
 from pydantic import BaseModel
-from typing import Dict
+from typing import Optional
 
 class FanBase(BaseModel):
     name: str
     username: str
     location: str
-    preferences: Dict[str, int]
+    preferences: dict
 
 class FanCreate(FanBase):
     pass
 
-class FanOut(FanBase):
+class Fan(FanBase):
     id: int
 
     class Config:
-        from_attributes = True
+        from_attributes = True  
