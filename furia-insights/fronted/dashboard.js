@@ -14,35 +14,44 @@ function updateFanChart(fans) {
     });
 
     const ctx = document.getElementById('fanChart').getContext('2d');
-
-    if (fanChartInstance) {
-        fanChartInstance.destroy();
-    }
-
-    fanChartInstance = new Chart(ctx, {
-        type: 'bar',
+    const fanChart = new Chart(ctx, {
+        type: 'bar', // Tipo de gráfico (bar = gráfico de barras)
         data: {
-            labels: ['CS2', 'LoL', 'Valorant'],
+            labels: ['Fã 1', 'Fã 2', 'Fã 3', 'Fã 4', 'Fã 5'],
             datasets: [{
-                label: 'Número de fãs',
-                data: [cs2Count, lolCount, valorantCount],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 206, 86, 0.6)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)'
-                ],
+                label: 'Interações',
+                data: [12, 19, 3, 5, 2],
+                backgroundColor: ['#09f', '#f39c12', '#1abc9c', '#e74c3c', '#3498db'],
+                borderColor: ['#09f', '#f39c12', '#1abc9c', '#e74c3c', '#3498db'],
                 borderWidth: 1
             }]
         },
         options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return 'Interações: ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            },
             scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Fãs'
+                    }
+                },
                 y: {
-                    beginAtZero: true
+                    title: {
+                        display: true,
+                        text: 'Quantidade'
+                    }
                 }
             }
         }

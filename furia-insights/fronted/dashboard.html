@@ -4,29 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <!-- Adicionando a fonte Orbitron do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
+
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
+    
+    <div id="loading" style="display: none; text-align: center; margin-top: 20px;">
+        <p>Carregando fãs...</p>
+    </div>
+    
     <div class="dashboard-container">
+        <!-- Sidebar -->
         <div class="sidebar">
-            <h3>Menu</h3>
             <ul>
-                <li>Dashboard</li>
-                <li>Configurações</li>
+                <li data-tooltip="Dashboard"><i class="fas fa-tachometer-alt"></i></li>
+                <li data-tooltip="Configurações"><i class="fas fa-cogs"></i></li>
             </ul>
         </div>
-        <div class="main-content">
-            <h2>Dashboard</h2>
-            <canvas id="fanChart" width="400" height="200"></canvas>
 
+        <!-- Main Content -->
+        <div class="main-content">
+            <h2 class="dashboard-title">Dashboard</h2>
+        
+            <!-- Gráfico logo abaixo do título -->
+            <canvas id="fanChart" width="400" height="200"></canvas>
+        
             <!-- Lista de Fãs -->
             <h3>Lista de Fãs</h3>
             <div id="fans-list" class="fans-list">
                 <!-- Aqui vamos listar os fãs dinamicamente -->
             </div>
+        
+            <!-- Botão para atualizar os dados -->
+            <button id="refreshButton" class="refresh-button">Atualizar Dados</button>
         </div>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="dashboard.js"></script>
