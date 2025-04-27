@@ -19,30 +19,28 @@
     </div>
     
     <div class="dashboard-container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <ul>
                 <li data-tooltip="Dashboard"><i class="fas fa-tachometer-alt"></i></li>
                 <li data-tooltip="Configurações"><i class="fas fa-cogs"></i></li>
             </ul>
         </div>
-
-        <!-- Main Content -->
         <div class="main-content">
-            <h2 class="dashboard-title">Dashboard</h2>
-        
-            <!-- Gráfico logo abaixo do título -->
+            <h2>Dashboard</h2>
+            
+            <!-- Gráfico -->
             <canvas id="fanChart" width="400" height="200"></canvas>
-        
+
             <!-- Lista de Fãs -->
             <h3>Lista de Fãs</h3>
             <div id="fans-list" class="fans-list">
                 <!-- Aqui vamos listar os fãs dinamicamente -->
             </div>
-        
+
             <!-- Botão para atualizar os dados -->
             <button id="refreshButton" class="refresh-button">Atualizar Dados</button>
         </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="dashboard.js"></script>
