@@ -27,20 +27,45 @@
         </div>
         <div class="main-content">
             <h2>Dashboard</h2>
-            
-            <!-- Gráfico -->
-            <canvas id="fanChart" width="400" height="200"></canvas>
+        
+            <!-- Botões de filtro (aqui dentro!) -->
+            <div class="filter-buttons">
+                <button onclick="filterFans('Todos')">Todos</button>
+                <button onclick="filterFans('CS2')">CS2</button>
+                <button onclick="filterFans('LoL')">LoL</button>
+                <button onclick="filterFans('Valorant')">Valorant</button>
+            </div>
+
+            <label for="chartType">Tipo de Gráfico:</label>
+        
+        
+            <div class="dashboard-wrapper">
+                <!-- Gráfico -->
+                <div class="chart-container">
+                    <canvas id="fanChart" width="400" height="200"></canvas>
+                </div>
+
+                <!-- Quiz Interativo -->
+                <div class="quiz-container">
+                    <h3>Quiz: Qual seu jogo favorito?</h3>
+                    <div id="quiz">
+                        <label><input type="radio" name="game" value="CS2" onclick="recordAnswer('CS2')"> CS2</label>
+                        <label><input type="radio" name="game" value="LoL" onclick="recordAnswer('LoL')"> LoL</label>
+                        <label><input type="radio" name="game" value="Valorant" onclick="recordAnswer('Valorant')"> Valorant</label>
+                    </div>
+                    <div id="quiz-result"></div>
+                </div>
+            </div>
 
             <!-- Lista de Fãs -->
             <h3>Lista de Fãs</h3>
             <div id="fans-list" class="fans-list">
                 <!-- Aqui vamos listar os fãs dinamicamente -->
             </div>
-
+        
             <!-- Botão para atualizar os dados -->
             <button id="refreshButton" class="refresh-button">Atualizar Dados</button>
         </div>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="dashboard.js"></script>

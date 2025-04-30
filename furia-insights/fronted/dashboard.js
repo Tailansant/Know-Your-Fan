@@ -1,4 +1,5 @@
-let fanChartInstance = null; // Guardar a instância do gráfico
+let allFans = []; // Variável global para armazenar todos os fãs
+let fanChartInstance = null;
 
 function updateFanChart(fans) {
     let cs2Count = 0;
@@ -14,48 +15,92 @@ function updateFanChart(fans) {
     });
 
     const ctx = document.getElementById('fanChart').getContext('2d');
-    const fanChart = new Chart(ctx, {
-        type: 'bar', // Tipo de gráfico (bar = gráfico de barras)
+
+    if (fanChartInstance) {
+        fanChartInstance.destroy(); // Destroi gráfico anterior
+    }
+
+    fanChartInstance = new Chart(ctx, {
+        type: 'bar',
         data: {
-            labels: ['Fã 1', 'Fã 2', 'Fã 3', 'Fã 4', 'Fã 5'],
+            labels: ['CS2', 'LoL', 'Valorant'],
             datasets: [{
-                label: 'Interações',
-                data: [12, 19, 3, 5, 2],
-                backgroundColor: ['#09f', '#f39c12', '#1abc9c', '#e74c3c', '#3498db'],
-                borderColor: ['#09f', '#f39c12', '#1abc9c', '#e74c3c', '#3498db'],
+                label: 'Fãs por Jogo',
+                data: [cs2Count, lolCount, valorantCount],
+                backgroundColor: ['#09f', '#f39c12', '#e74c3c'],
+                borderColor: ['#09f', '#f39c12', '#e74c3c'],
                 borderWidth: 1
             }]
         },
         options: {
             responsive: true,
             plugins: {
-                legend: {
-                    position: 'top',
-                },
+                legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        label: function(tooltipItem) {
-                            return 'Interações: ' + tooltipItem.raw;
+                        label: function (tooltipItem) {
+                            return 'Fãs: ' + tooltipItem.raw;
                         }
                     }
                 }
             },
             scales: {
                 x: {
-                    title: {
-                        display: true,
-                        text: 'Fãs'
-                    }
+                    title: { display: true, text: 'Jogos' }
                 },
                 y: {
-                    title: {
-                        display: true,
-                        text: 'Quantidade'
-                    }
+                    title: { display: true, text: 'Quantidade de Fãs' },
+                    beginAtZero: true,
+                    precision: 0
                 }
             }
         }
     });
+}
+
+function renderFanCards(fans) {
+    const fansList = document.getElementById('fans-list');
+    fansList.innerHTML = '';
+
+    if (fans.length === 0) {
+        fansList.innerHTML = '<p>Nenhum fã encontrado.</p>';
+    } else {
+        fans.forEach(fan => {
+            const card = document.createElement('div');
+            card.className = 'fan-card';
+
+            let preferencesHtml = '';
+            if (fan.preferences) {
+                preferencesHtml = '<ul>';
+                for (const key in fan.preferences) {
+                    preferencesHtml += `<li><strong>${key}:</strong> ${fan.preferences[key]}</li>`;
+                }
+                preferencesHtml += '</ul>';
+            }
+
+            card.innerHTML = `
+                <h4>${fan.name}</h4>
+                <p><strong>Username:</strong> ${fan.username}</p>
+                <p><strong>Localização:</strong> ${fan.location}</p>
+                <h5>Preferências:</h5>
+                ${preferencesHtml}
+            `;
+            fansList.appendChild(card);
+        });
+    }
+}
+
+function filterFans(jogo) {
+    let filtrados = [];
+
+    if (jogo === 'Todos') {
+        filtrados = allFans;
+    } else {
+        filtrados = allFans.filter(fan => fan.preferences && fan.preferences[jogo]);
+    }
+
+    renderFanCards(filtrados);
+    updateFanChart(filtrados);
 }
 
 async function fetchFans() {
@@ -65,46 +110,22 @@ async function fetchFans() {
             throw new Error('Erro ao buscar fãs');
         }
         const fans = await response.json();
-        console.log(fans); // Verifique se os fãs estão sendo carregados corretamente
+        allFans = fans; // Salva os fãs para uso global
 
-        const fansList = document.getElementById('fans-list');
-        fansList.innerHTML = ''; // Limpar qualquer conteúdo anterior
-
-        if (fans.length === 0) {
-            fansList.innerHTML = '<p>Nenhum fã encontrado.</p>';
-        } else {
-            fans.forEach(fan => {
-                const card = document.createElement('div');
-                card.className = 'fan-card';
-
-                let preferencesHtml = '';
-                if (fan.preferences) {
-                    preferencesHtml = '<ul>';
-                    for (const key in fan.preferences) {
-                        preferencesHtml += `<li><strong>${key}:</strong> ${fan.preferences[key]}</li>`;
-                    }
-                    preferencesHtml += '</ul>';
-                }
-
-                card.innerHTML = `
-                    <h4>${fan.name}</h4>
-                    <p><strong>Username:</strong> ${fan.username}</p>
-                    <p><strong>Localização:</strong> ${fan.location}</p>
-                    <h5>Preferências:</h5>
-                    ${preferencesHtml}
-                `;
-
-                fansList.appendChild(card);
-            });
-        }
-
-        // Atualiza o gráfico depois de listar os fãs
+        renderFanCards(fans);
         updateFanChart(fans);
-
     } catch (error) {
         console.error('Erro:', error);
     }
 }
 
-// Chama a função quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', fetchFans);
+
+// Função para registrar a resposta do quiz
+let quizAnswer = null;
+
+function recordAnswer(answer) {
+    quizAnswer = answer;
+    document.getElementById('quiz-result').textContent = `Você escolheu: ${answer}`;
+}
+
